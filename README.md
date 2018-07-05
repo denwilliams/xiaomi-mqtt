@@ -4,6 +4,10 @@ Fork from [https://github.com/cflurin/xiaomi-mqtt](https://github.com/cflurin/xi
 
 Does everything the original repo does, but also emits device status events
 
+```
+npm i -g denwilliams/xiaomi-mqtt
+```
+
 (WIP - just adding the bits i have now)
 
 - xiaomi/status/sensor_ht/{id}/temperature
