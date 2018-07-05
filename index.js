@@ -92,6 +92,7 @@ server.on('message', function(buffer, rinfo) {
       var data = JSON.parse(msg.data);
       switch (msg.model) {
         case "sensor_ht":
+        case 'weather.v1':
           var temperature = data.temperature ? Math.round(data.temperature / 10.0) / 10 : null;
           if (temperature) {
             mqtt.publish(temperature, `status/${msg.model}/${msg.sid}/temperature`);
@@ -101,6 +102,9 @@ server.on('message', function(buffer, rinfo) {
             mqtt.publish(humidity, `status/${msg.model}/${msg.sid}/humidity`);
           }
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": {"voltage": data.voltage, "temperature":temperature, "humidity":humidity}};
+          if (data.pressure) {
+            mqtt.publish(Math.round(data.pressure / 100.0) / 10, `status/${msg.model}/${msg.sid}/pressure`);
+          }
           if (data.voltage) {
             mqtt.publish(data.voltage, `status/${msg.model}/${msg.sid}/voltage`);
           }
@@ -169,8 +173,10 @@ server.on('message', function(buffer, rinfo) {
 
       switch (msg.model) {
         case "sensor_ht":
+        case "weather.v1":
           if (data.temperature) mqtt.publish(Math.round(data.temperature / 10.0) / 10, `status/${msg.model}/${msg.sid}/temperature`);
           if (data.humidity) mqtt.publish(Math.round(data.humidity / 10.0) / 10, `status/${msg.model}/${msg.sid}/humidity`);
+          if (data.pressure) mqtt.publish(Math.round(data.pressure / 100.0) / 10, `status/${msg.model}/${msg.sid}/pressure`);
           if (data.voltage) mqtt.publish(data.voltage, `status/${msg.model}/${msg.sid}/voltage`);
           break;
         case "sensor_motion.aq2":
