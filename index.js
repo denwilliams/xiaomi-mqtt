@@ -199,6 +199,11 @@ server.on('message', function(buffer, rinfo) {
             mqtt.publish(parseFloat(data.load_power), `status/${msg.model}/${msg.sid}/load_power`);
           }
           break;
+        case 'sensor_cube.aqgl01':
+          if (data.voltage) {
+            mqtt.publish(data.voltage, `status/${msg.model}/${msg.sid}/voltage`);
+          }
+          break;
         case "gateway":
           break;
         // case "86sw2":
