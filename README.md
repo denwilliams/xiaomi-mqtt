@@ -4,6 +4,8 @@ Fork from [https://github.com/cflurin/xiaomi-mqtt](https://github.com/cflurin/xi
 
 Does everything the original repo does, but also emits device status events
 
+(WIP - just adding the bits i have now)
+
 - xiaomi/status/sensor_ht/{id}/temperature
 - xiaomi/status/sensor_ht/{id}/humidity
 - xiaomi/status/sensor_ht/{id}/pressure
@@ -11,21 +13,25 @@ Does everything the original repo does, but also emits device status events
 
 - xiaomi/status/sensor_motion.aq2/{id}/status (motion)
 - xiaomi/status/sensor_motion.aq2/{id}/motion
-- xiaomi/status/sensor_motion.aq2/{id}/no_motion ("120"/"180"/"300"/"600")
+- xiaomi/status/sensor_motion.aq2/{id}/no_motion (120/180/300/600/1200/1800)
 - xiaomi/status/sensor_motion.aq2/{id}/lux
+
+- xiaomi/status/86sw2/{id}/channel_0/click
+- xiaomi/status/86sw2/{id}/channel_1/click
+- xiaomi/status/86sw2/{id}/voltage (2995)
+
+- xiaomi/status/sensor_switch.aq2/{id}/status (click/double_click)
+- xiaomi/status/sensor_switch.aq2/{id}/click
+- xiaomi/status/sensor_switch.aq2/{id}/double_click
+- xiaomi/status/sensor_switch.aq2/{id}/voltage (2995)
 
 - xiaomi/status/plug/{id}/voltage
 - xiaomi/status/plug/{id}/status (on/off)
-- xiaomi/status/plug/{id}/inuse ("1"/"0")
-- xiaomi/status/plug/{id}/power_consumed ("439")
-- xiaomi/status/plug/{id}/load_power ("3.97")
-
-- xiaomi/status/switch/{id}/voltage (2995)
-- xiaomi/status/86sw2/{id}/voltage (2995)
+- xiaomi/status/plug/{id}/inuse (1/0)
+- xiaomi/status/plug/{id}/power_consumed (439)
+- xiaomi/status/plug/{id}/load_power (3.97)
 
 - xiaomi/status/sensor_cube.aqgl01/{id}/voltage (2995)
-
-- xiaomi/status/gateway/{id}/???
 
 # Original Docs
 
