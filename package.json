@@ -28,7 +28,6 @@
     "chalk": ">=2.3.0"
   },
   "author": "cflurin",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/cflurin/xiaomi-mqtt/issues"
   },

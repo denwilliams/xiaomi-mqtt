@@ -55,7 +55,7 @@ server.on('listening', function() {
 
 server.on('message', function(buffer, rinfo) {
   var msg;
-  
+
   try {
     msg = JSON.parse(buffer);
     log.trace("msg "+JSON.stringify(msg));
@@ -93,20 +93,48 @@ server.on('message', function(buffer, rinfo) {
       switch (msg.model) {
         case "sensor_ht":
           var temperature = data.temperature ? Math.round(data.temperature / 10.0) / 10 : null;
+          if (temperature) {
+            mqtt.publish(temperature, `status/${msg.model}/${msg.sid}/temperature`);
+          }
           var humidity = data.humidity ? Math.round(data.humidity / 10.0) / 10: null;
+          if (humidity) {
+            mqtt.publish(humidity, `status/${msg.model}/${msg.sid}/humidity`);
+          }
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": {"voltage": data.voltage, "temperature":temperature, "humidity":humidity}};
-          log.debug(JSON.stringify(payload));  
+          if (data.voltage) {
+            mqtt.publish(data.voltage, `status/${msg.model}/${msg.sid}/voltage`);
+          }
+          log.debug(JSON.stringify(payload));
           break;
-        case "gateway":
         case "sensor_motion.aq2":
+          if (data.lux) {
+            mqtt.publish(parseInt(data.lux, 10), `status/${msg.model}/${msg.sid}/lux`);
+          }
+          if (data.status) {
+            mqtt.publish(data.status, `status/${msg.model}/${msg.sid}/status`);
+          }
+          if (data.status && data.status === 'motion') {
+            mqtt.publish(new Date().toISOString(), `status/${msg.model}/${msg.sid}/motion`);
+          }
+          if (data.no_motion) {
+            mqtt.publish(parseInt(data.no_motion), `status/${msg.model}/${msg.sid}/no_motion`);
+          }
+        case "gateway":
+          payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
+          log.debug(JSON.stringify(payload));
+          break;
         case "magnet":
         case "switch":
         case "86sw2":
         case "cube":
+          console.log('TODOISH report', msg.model);
+          console.log(msg);
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
           log.debug(JSON.stringify(payload));
-          break;       
+          break;
         default:
+          console.log('TODO report', msg.model);
+          console.log(msg);
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
           log.debug("untested "+JSON.stringify(payload));
       }
@@ -116,7 +144,7 @@ server.on('message', function(buffer, rinfo) {
       var data = JSON.parse(msg.data);
       payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
       log.debug(JSON.stringify(payload));
-      mqtt.publish(payload); 
+      mqtt.publish(payload);
       break;
     case "heartbeat":
       var data = JSON.parse(msg.data);
@@ -127,6 +155,49 @@ server.on('message', function(buffer, rinfo) {
       if (msg.model !== "gateway") {
         log.debug(JSON.stringify(payload));
       }
+
+      switch (msg.model) {
+        case "sensor_ht":
+          if (data.temperature) mqtt.publish(Math.round(data.temperature / 10.0) / 10, `status/${msg.model}/${msg.sid}/temperature`);
+          if (data.humidity) mqtt.publish(Math.round(data.humidity / 10.0) / 10, `status/${msg.model}/${msg.sid}/humidity`);
+          if (data.voltage) mqtt.publish(data.voltage, `status/${msg.model}/${msg.sid}/voltage`);
+          break;
+        case "sensor_motion.aq2":
+          if (data.lux) mqtt.publish(data.lux, `status/${msg.model}/${msg.sid}/lux`);
+          if (data.status) mqtt.publish(data.status, `status/${msg.model}/${msg.sid}/status`);
+          if (data.status && data.status.motion) mqtt.publish(new Date().toISOString(), `status/${msg.model}/${msg.sid}/motion`);
+          if (data.no_motion) mqtt.publish(data.no_motion, `status/${msg.model}/${msg.sid}/no_motion`);
+          break;
+        case 'plug':
+          if (data.status) {
+            mqtt.publish(data.status, `status/${msg.model}/${msg.sid}/status`);
+          }
+          if (data.voltage) {
+            mqtt.publish(data.voltage, `status/${msg.model}/${msg.sid}/voltage`);
+          }
+          if (data.inuse) {
+            mqtt.publish(parseInt(data.inuse), `status/${msg.model}/${msg.sid}/inuse`);
+          }
+          if (data.power_consumed) {
+            mqtt.publish(parseInt(data.power_consumed), `status/${msg.model}/${msg.sid}/power_consumed`);
+          }
+          if (data.load_power) {
+            mqtt.publish(parseFloat(data.load_power), `status/${msg.model}/${msg.sid}/load_power`);
+          }
+          break;
+        case "gateway":
+          break;
+        // case "magnet":
+        // case "switch":
+        // case "86sw2":
+        // case "cube":
+        //   break;
+        default:
+          console.log('TODO heartbeat', msg.model);
+          console.log(msg);
+          break;
+      }
+
       mqtt.publish(payload);
       break;
     default:
@@ -204,11 +275,11 @@ function write(mqtt_payload) {
       }
       msg = JSON.stringify(payload);
       log.debug(msg);
-      server.send(msg, 0, msg.length, sidPort[sid], sidAddress[sid]);   
+      server.send(msg, 0, msg.length, sidPort[sid], sidAddress[sid]);
     } else {
       payload = {"cmd":"xm","msg":"gateway token unknown."};
       log.warn(JSON.stringify(payload));
-      mqtt.publish(payload);      
+      mqtt.publish(payload);
     }
   } else {
     payload = {"cmd":"xm","msg":"sid >"+sid+"< unknown."};

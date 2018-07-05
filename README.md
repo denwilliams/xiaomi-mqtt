@@ -1,9 +1,33 @@
 # xiaomi-mqtt
 
-[![NPM version][npm-image]][npm-url]
+Fork from [https://github.com/cflurin/xiaomi-mqtt](https://github.com/cflurin/xiaomi-mqtt) since I wanted a different event structure for my own reasons.
 
-[npm-image]: http://img.shields.io/npm/v/xiaomi-mqtt.svg
-[npm-url]: https://npmjs.org/package/xiaomi-mqtt
+Does everything the original repo does, but also emits device status events
+
+- xiaomi/status/sensor_ht/{id}/temperature
+- xiaomi/status/sensor_ht/{id}/humidity
+- xiaomi/status/sensor_ht/{id}/pressure
+- xiaomi/status/sensor_ht/{id}/voltage
+
+- xiaomi/status/sensor_motion.aq2/{id}/status (motion)
+- xiaomi/status/sensor_motion.aq2/{id}/motion
+- xiaomi/status/sensor_motion.aq2/{id}/no_motion ("120"/"180"/"300"/"600")
+- xiaomi/status/sensor_motion.aq2/{id}/lux
+
+- xiaomi/status/plug/{id}/voltage
+- xiaomi/status/plug/{id}/status (on/off)
+- xiaomi/status/plug/{id}/inuse ("1"/"0")
+- xiaomi/status/plug/{id}/power_consumed ("439")
+- xiaomi/status/plug/{id}/load_power ("3.97")
+
+- xiaomi/status/switch/{id}/voltage (2995)
+- xiaomi/status/86sw2/{id}/voltage (2995)
+
+- xiaomi/status/sensor_cube.aqgl01/{id}/voltage (2995)
+
+- xiaomi/status/gateway/{id}/???
+
+# Original Docs
 
 A Bridge between the Xiaomi Mi Smart Home Gateway and the Mqtt broker.
 
@@ -104,7 +128,7 @@ and
 
 ```sh
 topic: xiaomi/from
-payload: 
+payload:
 {
   "cmd":"get_id_list_ack",
   "sid":"fff...",
@@ -193,7 +217,7 @@ payload:
 ```sh
 "data": {"voltage":3005,"temperature":16.7,"humidity":null}
 or
-"data": {"voltage":3005,"temperature":null,"humidity":51.7} 
+"data": {"voltage":3005,"temperature":null,"humidity":51.7}
 ```
 
 **magnet**
@@ -342,7 +366,7 @@ payload:
 
 ```sh
 topic: xiaomi/to/write
-payload: 
+payload:
 {
   "cmd": "write",
   "model": "gateway",
