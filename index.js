@@ -132,12 +132,22 @@ server.on('message', function(buffer, rinfo) {
           }
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
           break;
+        case 'sensor_magnet.aq2':
+          if (data.status) {
+            mqtt.publish(data.status, `status/${msg.model}/${msg.sid}/status`);
+            mqtt.publish(new Date().toISOString(), `status/${msg.model}/${msg.sid}/${data.status}`);
+          }
+          payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
+          break;
         case "86sw2":
           if (data.channel_0) {
             mqtt.publish(new Date().toISOString(), `status/${msg.model}/${msg.sid}/channel_0/${data.channel_0}`);
           }
           if (data.channel_1) {
             mqtt.publish(new Date().toISOString(), `status/${msg.model}/${msg.sid}/channel_1/${data.channel_1}`);
+          }
+          if (data.dual_channel) {
+            mqtt.publish(new Date().toISOString(), `status/${msg.model}/${msg.sid}/dual_channel/${data.dual_channel}`);
           }
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
           break;
