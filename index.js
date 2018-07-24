@@ -196,11 +196,17 @@ server.on('message', function(buffer, rinfo) {
             mqtt.publish(new Date().toISOString(), `status/${msg.model}/${msg.sid}/${data.status}`);
           }
           if (data.no_motion) mqtt.publish(data.no_motion, `status/${msg.model}/${msg.sid}/no_motion`);
+          if (data.voltage) {
+            mqtt.publish(data.voltage, `status/${msg.model}/${msg.sid}/voltage`);
+          }
           break;
         case 'sensor_magnet.aq2':
           if (data.status) {
             mqtt.publish(data.status, `status/${msg.model}/${msg.sid}/status`);
             mqtt.publish(new Date().toISOString(), `status/${msg.model}/${msg.sid}/${data.status}`);
+          }
+          if (data.voltage) {
+            mqtt.publish(data.voltage, `status/${msg.model}/${msg.sid}/voltage`);
           }
           break;
         case 'plug':
