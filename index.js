@@ -321,7 +321,7 @@ function write(mqtt_payload) {
 
   if (sid in sidPort) {
     try {
-      var cipher = crypto.createCipheriv('aes-128-cbc', password, IV);
+      var cipher = crypto.createCipheriv('aes-128-cbc', payload.password || password, IV);
     } catch (e) {
       payload = {"cmd":"xm","msg":"Cipher "+JSON.stringify(cipher)+", check the password in config.json."};
       log.error(JSON.stringify(payload));
