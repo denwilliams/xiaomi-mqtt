@@ -158,6 +158,21 @@ server.on('message', function(buffer, rinfo) {
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
           log.debug(JSON.stringify(payload));
           break;
+        case 'plug':
+          if (data.status) {
+            mqtt.publish(data.status, `status/${msg.model}/${msg.sid}/status`);
+            mqtt.publish(new Date().toISOString(), `status/${msg.model}/${msg.sid}/${data.status}`);
+          }
+          if (data.inuse) {
+            mqtt.publish(parseInt(data.inuse), `status/${msg.model}/${msg.sid}/inuse`);
+          }
+          if (data.power_consumed) {
+            mqtt.publish(parseInt(data.power_consumed), `status/${msg.model}/${msg.sid}/power_consumed`);
+          }
+          if (data.load_power) {
+            mqtt.publish(parseFloat(data.load_power), `status/${msg.model}/${msg.sid}/load_power`);
+          }
+          break;
         default:
           console.log('TODO report', msg.model);
           console.log(msg);
