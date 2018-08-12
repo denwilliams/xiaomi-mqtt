@@ -110,8 +110,9 @@ server.on('message', function(buffer, rinfo) {
           }
           log.debug(JSON.stringify(payload));
           break;
+        case "motion":
         case "sensor_motion.aq2":
-          if (data.lux) {
+          if (data.lux) { // only in sensor_motion.aq2
             mqtt.publish(parseInt(data.lux, 10), `status/${msg.model}/${msg.sid}/lux`);
           }
           if (data.status) {
@@ -189,6 +190,7 @@ server.on('message', function(buffer, rinfo) {
           if (data.pressure) mqtt.publish(Math.round(data.pressure / 100.0) / 10, `status/${msg.model}/${msg.sid}/pressure`);
           if (data.voltage) mqtt.publish(data.voltage, `status/${msg.model}/${msg.sid}/voltage`);
           break;
+        case "motion":
         case "sensor_motion.aq2":
           if (data.lux) mqtt.publish(data.lux, `status/${msg.model}/${msg.sid}/lux`);
           if (data.status) {
