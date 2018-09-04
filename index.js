@@ -160,7 +160,7 @@ server.on('message', function(buffer, rinfo) {
           }
           if (data.rotate) {
             const [rotation, duration] = data.rotate.split(',');
-            mqtt.publish({ rotation, duration }, `status/${msg.model}/${msg.sid}/rotate`);
+            mqtt.publish({ rotation: parseInt(rotation), duration: parseInt(duration) }, `status/${msg.model}/${msg.sid}/rotate`);
           }
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
           log.debug(JSON.stringify(payload));
