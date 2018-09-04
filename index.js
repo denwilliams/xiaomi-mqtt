@@ -153,8 +153,15 @@ server.on('message', function(buffer, rinfo) {
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
           break;
         case "cube":
-          console.log('TODO report', msg.model);
-          console.log(msg);
+        case 'sensor_cube.aqgl01':
+          if (data.status) {
+            mqtt.publish(data.status, `status/${msg.model}/${msg.sid}/status`);
+            mqtt.publish(new Date().toISOString(), `status/${msg.model}/${msg.sid}/${data.status}`);
+          }
+          if (data.rotate) {
+            const [rotation, duration] = data.rotate.split(',');
+            mqtt.publish({ rotation, duration }, `status/${msg.model}/${msg.sid}/rotate`);
+          }
           payload = {"cmd":msg.cmd ,"model":msg.model, "sid":msg.sid, "short_id":msg.short_id, "data": data};
           log.debug(JSON.stringify(payload));
           break;
